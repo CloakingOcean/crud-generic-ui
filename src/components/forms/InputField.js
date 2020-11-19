@@ -27,6 +27,7 @@ function InputField({
     if (Array.isArray(stateValue)) {
       setIsArray(true);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (

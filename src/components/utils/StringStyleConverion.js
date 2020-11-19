@@ -12,6 +12,13 @@ export function kebabToPascalCaseWithSpaces(text) {
   return text.replace(/(^\w|-\w)/g, clearAndUpperWithSpaces);
 }
 
+export function capitalizeWord(word) {
+  const upperCaseFirstLetter = word.charAt(0).toUpperCase;
+  const rest = word.slice(0);
+
+  return `${upperCaseFirstLetter}${rest}`;
+}
+
 function clearAndUpper(text) {
   return text.replace(/-/, "").toUpperCase();
 }

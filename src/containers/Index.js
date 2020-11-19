@@ -1,4 +1,4 @@
-import React from "react";
+import React, { Component } from "react";
 
 import DeleteButton from "../components/DeleteButton";
 
@@ -11,18 +11,22 @@ import {
   deleteItemFromStateArrayByMongoId,
 } from "cloak-state-util";
 
-import { kebabToPascalCaseWithSpaces } from "../components/utils/StringStyleConverion";
+import {
+  kebabToPascalCaseWithSpaces,
+  capitalizeWord,
+} from "../components/utils/StringStyleConverion";
 
 import "./Index.scss";
 
 function Index({ resourceName, resourceFields }) {
-  const [resources, setResources] = React.useState();
+  const [resources, setResources] = React.useState([]);
 
   const [maxColumnLengths, setMaxColumnLengths] = React.useState({});
   const REACT_APP_API_URL = process.env.REACT_APP_API_URL;
-  const RESOURCE_API_BASE_URL = process.env.RESOURCE_API_BASE_URL.replace(
+  const REACT_APP_RESOURCE_API_BASE_URL = process.env.REACT_APP_RESOURCE_API_BASE_URL.replace(
     "<resource>",
-    resourceName.toLowerCase();
+    // Perhaps in the future, will add functionality for resources that have differeing plural words
+    resourceName.toLowerCase() + "s"
   );
 
   /* 
@@ -37,22 +41,27 @@ function Index({ resourceName, resourceFields }) {
 
   */
 
-  React.useEffect(async function () {
-    const url = `${REACT_APP_API_URL}${RESOURCE_API_BASE_URL}`;
+  React.useEffect(function () {
+    const url = `${REACT_APP_API_URL}${REACT_APP_RESOURCE_API_BASE_URL}`;
 
-    const response = await fetch(url);
-    const data = await response.json();
-    if (definitions === undefined && data[0]) {
-      setDefinitions(data);
+    let data;
+
+    console.log("FETCHING");
+    fetch(url)
+      .then((response) => response.json())
+      .then((inputData) => (data = inputData));
+
+    if (resources === undefined && data[0]) {
+      setResources(data);
 
       Object.keys(data[0])
         .filter((field) => Array.isArray(data[0][field]))
         .forEach((field) => {
           let maxFieldLength = 0;
 
-          data.forEach((definition) => {
-            if (definition[field].length > maxFieldLength) {
-              maxFieldLength = definition[field].length;
+          data.forEach((resource) => {
+            if (resource[field].length > maxFieldLength) {
+              maxFieldLength = resource[field].length;
             }
           });
 
@@ -64,29 +73,65 @@ function Index({ resourceName, resourceFields }) {
           );
         });
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   function updateDelete(id) {
-    console.log("CALLED");
-    console.log(definitions);
-    deleteItemFromStateArrayByMongoId(definitions, setDefinitions, id);
+    deleteItemFromStateArrayByMongoId(resources, setResources, id);
   }
 
   const fieldsObj = {};
-  fieldsObj.header = [];
-  fieldsObj.inputs = [];
+  fieldsObj.tableData = [];
 
-  resourceFields.map((resourceField) => {
-    fieldsObj.header.push(handleFieldHeaders(resourceField));
-    fieldsObj.inputs.push(handleFieldInputs(resourceFields));
+  fieldsObj.header = resourceFields.map((resourceField) => {
+    return handleFieldHeaders(resourceField);
+  });
+
+  resources.forEach((resource) => {
+    const resourceTableData = [];
+
+    resourceFields.forEach((resourceField) => {
+      resourceTableData.push(handleTableData(resource, resourceField.name));
+    });
+
+    resourceTableData.push(
+      <td key={`${resource._id}-update`}>
+        <Link
+          to={`${REACT_APP_RESOURCE_API_BASE_URL}/update${capitalizeWord(
+            resourceName
+          )}/${encodeURI(resource._id)}`}
+        >
+          <Button color="primary">Update</Button>
+        </Link>
+      </td>
+    );
+
+    resourceTableData.push(
+      <td key={`${resource._id}-delete`}>
+        <DeleteButton
+          resourceProp={resource}
+          updateDelete={updateDelete}
+          resourceName={resourceName}
+          resourceFields={resourceFields}
+        />
+      </td>
+    );
+
+    const nestedTableData = <tr>{resourceTableData}</tr>;
+
+    fieldsObj.tableData.push(nestedTableData);
   });
 
   function handleFieldHeaders(resourceField) {
-    return <th>{kebabToPascalCaseWithSpaces(resourceField.name)}</th>;
+    return (
+      <th key={resourceField.name}>
+        {kebabToPascalCaseWithSpaces(resourceField.name)}
+      </th>
+    );
   }
 
-  function handleFieldInputs(resource) {
-    return <td>{definition.term}</td>;
+  function handleTableData(resource, fieldName) {
+    return <td key={`${fieldName}-${resource._id}`}>{resource[fieldName]}</td>;
   }
 
   return (
@@ -95,38 +140,17 @@ function Index({ resourceName, resourceFields }) {
         <thead>
           <tr>{fieldsObj.header}</tr>
         </thead>
-        <tbody>
-          {definitions !== undefined &&
-            definitions.map((definition) => {
-              return (
-                <tr key={definition._id}>
-                  <td>{definition.term}</td>
-                  <td>{definition.definition}</td>
-                  <td>
-                    <Link
-                      to={`/api/definitions/updateDefinition/${encodeURI(
-                        definition._id
-                      )}`}
-                    >
-                      <Button color="primary">Update</Button>
-                    </Link>
-                  </td>
-                  <td>
-                    <DeleteButton
-                      definitionProp={definition}
-                      updateDelete={updateDelete}
-                      resourceName={resourceName}
-                      resourceFields={resourceFields}
-                    />
-                  </td>
-                </tr>
-              );
-            })}
-        </tbody>
+        <tbody>{fieldsObj.tableData}</tbody>
       </table>
 
-      <Link to="api/definitions/createDefinition">
-        <Button color="success">Create Definition</Button>
+      <Link
+        to={`${REACT_APP_RESOURCE_API_BASE_URL}/update${capitalizeWord(
+          resourceName
+        )}`}
+      >
+        <Button color="success">{`Create ${capitalizeWord(
+          resourceName
+        )}`}</Button>
       </Link>
     </main>
   );

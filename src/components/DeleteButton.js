@@ -10,6 +10,7 @@ function DeleteButton({ definitionProp, updateDelete, resources }) {
 
   React.useEffect(() => {
     setDefinition(definitionProp);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   function handleOnClick(event) {
