@@ -3,13 +3,25 @@ import "./DeleteButton.scss";
 
 import { Button } from "reactstrap";
 
-const REACT_APP_API_URL = process.env.REACT_APP_API_URL;
+import { kebabToLowerCaseWithSpaces } from "../components/utils/StringStyleConverion";
 
-function DeleteButton({ definitionProp, updateDelete, resources }) {
-  const [definition, setDefinition] = React.useState();
+function DeleteButton({
+  resourceProp,
+  updateDelete,
+  resourceName,
+  resourceFields,
+}) {
+  const REACT_APP_API_URL = process.env.REACT_APP_API_URL;
+  const REACT_APP_RESOURCE_API_BASE_URL = process.env.REACT_APP_RESOURCE_API_BASE_URL.replace(
+    "<resource>",
+    // Perhaps in the future, will add functionality for resources that have differeing plural words
+    resourceName.toLowerCase() + "s"
+  );
+
+  const [resource, setResource] = React.useState();
 
   React.useEffect(() => {
-    setDefinition(definitionProp);
+    setResource(resourceProp);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -17,7 +29,9 @@ function DeleteButton({ definitionProp, updateDelete, resources }) {
     event.preventDefault();
 
     const confirmResult = window.confirm(
-      "Are you sure you want to delete this definition?",
+      `Are you sure you want to delete this ${kebabToLowerCaseWithSpaces(
+        resourceName
+      )}?`,
       false
     );
 
@@ -25,12 +39,15 @@ function DeleteButton({ definitionProp, updateDelete, resources }) {
       return;
     }
 
-    fetch(`${REACT_APP_API_URL}/api/definitions/${definition._id}`, {
-      method: "DELETE",
-    })
+    fetch(
+      `${REACT_APP_API_URL}${REACT_APP_RESOURCE_API_BASE_URL}/${resource._id}`,
+      {
+        method: "DELETE",
+      }
+    )
       .then((res) => res.text())
-      .then((res) => {
-        updateDelete(definition._id);
+      .then(() => {
+        updateDelete(resource._id);
       });
   }
 
