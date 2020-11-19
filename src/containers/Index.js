@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React from "react";
 
 import DeleteButton from "../components/DeleteButton";
 
@@ -19,7 +19,7 @@ import {
 import "./Index.scss";
 
 function Index({ resourceName, resourceFields }) {
-  const [resources, setResources] = React.useState([]);
+  const [resources, setResources] = React.useState();
 
   const [maxColumnLengths, setMaxColumnLengths] = React.useState({});
   const REACT_APP_API_URL = process.env.REACT_APP_API_URL;
@@ -44,35 +44,36 @@ function Index({ resourceName, resourceFields }) {
   React.useEffect(function () {
     const url = `${REACT_APP_API_URL}${REACT_APP_RESOURCE_API_BASE_URL}`;
 
-    let data;
-
-    console.log("FETCHING");
     fetch(url)
       .then((response) => response.json())
-      .then((inputData) => (data = inputData));
+      .then((data) => {
+        console.log(data);
+        console.log(resources);
+        if (resources === undefined && data[0]) {
+          setResources(data);
+          console.log(data);
 
-    if (resources === undefined && data[0]) {
-      setResources(data);
+          Object.keys(data[0])
+            .filter((field) => Array.isArray(data[0][field]))
+            .forEach((field) => {
+              let maxFieldLength = 0;
 
-      Object.keys(data[0])
-        .filter((field) => Array.isArray(data[0][field]))
-        .forEach((field) => {
-          let maxFieldLength = 0;
+              data.forEach((resource) => {
+                if (resource[field].length > maxFieldLength) {
+                  maxFieldLength = resource[field].length;
+                }
+              });
 
-          data.forEach((resource) => {
-            if (resource[field].length > maxFieldLength) {
-              maxFieldLength = resource[field].length;
-            }
-          });
+              setStateObjectProperty(
+                maxColumnLengths,
+                setMaxColumnLengths,
+                field,
+                maxFieldLength
+              );
+            });
+        }
+      });
 
-          setStateObjectProperty(
-            maxColumnLengths,
-            setMaxColumnLengths,
-            field,
-            maxFieldLength
-          );
-        });
-    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -87,40 +88,47 @@ function Index({ resourceName, resourceFields }) {
     return handleFieldHeaders(resourceField);
   });
 
-  resources.forEach((resource) => {
-    const resourceTableData = [];
+  fieldsObj.header.push(<th key="update-header">Update</th>);
+  fieldsObj.header.push(<th key="delete-header">Delete</th>);
 
-    resourceFields.forEach((resourceField) => {
-      resourceTableData.push(handleTableData(resource, resourceField.name));
+  if (resources !== undefined) {
+    resources.forEach((resource) => {
+      const resourceTableData = [];
+
+      resourceFields.forEach((resourceField) => {
+        resourceTableData.push(handleTableData(resource, resourceField.name));
+      });
+
+      resourceTableData.push(
+        <td key={`${resource._id}-update`}>
+          <Link
+            to={`${REACT_APP_RESOURCE_API_BASE_URL}/update${capitalizeWord(
+              resourceName
+            )}/${encodeURI(resource._id)}`}
+          >
+            <Button color="primary">Update</Button>
+          </Link>
+        </td>
+      );
+
+      resourceTableData.push(
+        <td key={`${resource._id}-delete`}>
+          <DeleteButton
+            resourceProp={resource}
+            updateDelete={updateDelete}
+            resourceName={resourceName}
+            resourceFields={resourceFields}
+          />
+        </td>
+      );
+
+      const nestedTableData = (
+        <tr key={`${resource._id}-row`}>{resourceTableData}</tr>
+      );
+
+      fieldsObj.tableData.push(nestedTableData);
     });
-
-    resourceTableData.push(
-      <td key={`${resource._id}-update`}>
-        <Link
-          to={`${REACT_APP_RESOURCE_API_BASE_URL}/update${capitalizeWord(
-            resourceName
-          )}/${encodeURI(resource._id)}`}
-        >
-          <Button color="primary">Update</Button>
-        </Link>
-      </td>
-    );
-
-    resourceTableData.push(
-      <td key={`${resource._id}-delete`}>
-        <DeleteButton
-          resourceProp={resource}
-          updateDelete={updateDelete}
-          resourceName={resourceName}
-          resourceFields={resourceFields}
-        />
-      </td>
-    );
-
-    const nestedTableData = <tr>{resourceTableData}</tr>;
-
-    fieldsObj.tableData.push(nestedTableData);
-  });
+  }
 
   function handleFieldHeaders(resourceField) {
     return (
