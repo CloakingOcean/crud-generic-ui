@@ -8,6 +8,7 @@ import { Form, Button } from "reactstrap";
 function ResourceForm({
   resourceName,
   resourceFields,
+  stateFields,
   setStateFields,
   redirect,
   setRedirect,
@@ -17,6 +18,11 @@ function ResourceForm({
   const [backHome, setBackHome] = React.useState(false);
 
   const REACT_APP_API_URL = process.env.REACT_APP_API_URL;
+  const REACT_APP_RESOURCE_API_BASE_URL = process.env.REACT_APP_RESOURCE_API_BASE_URL.replace(
+    "<resource>",
+    // Perhaps in the future, will add functionality for resources that have differeing plural words
+    resourceName.toLowerCase() + "s"
+  );
 
   function onSubmit(event) {
     event.preventDefault();
@@ -46,9 +52,9 @@ function ResourceForm({
     let url;
 
     if (!create) {
-      url = `${REACT_APP_API_URL}/api/definitions/${params.id}`;
+      url = `${REACT_APP_API_URL}${REACT_APP_RESOURCE_API_BASE_URL}/${params.id}`;
     } else {
-      url = `${REACT_APP_API_URL}/api/definitions/`;
+      url = `${REACT_APP_API_URL}${REACT_APP_RESOURCE_API_BASE_URL}`;
     }
 
     if (!create) {
@@ -69,10 +75,27 @@ function ResourceForm({
     setRedirect(true);
   }
 
+  const inputFields = [];
+
+  generateInputFields();
+
+  function generateInputFields() {
+    resourceFields.forEach((resourceField) => {
+      inputFields.push(
+        <InputField
+          name={resourceField.name}
+          stateValue={stateFields[resourceField]}
+          setStateFields={setStateFields}
+        />
+      );
+    });
+  }
+
   return (
     <>
       <Form id="resource-form" onSubmit={onSubmit}>
-        <InputField
+        {inputFields}
+        {/* <InputField
           name="term"
           stateValue={term}
           setStateFunc={setTerm}
@@ -83,7 +106,7 @@ function ResourceForm({
           stateValue={definition}
           setStateFunc={setDefinition}
           inputType="text"
-        />
+        /> */}
         <Button
           color="primary"
           type="submit"

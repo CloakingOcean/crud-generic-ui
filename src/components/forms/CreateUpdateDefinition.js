@@ -64,6 +64,7 @@ function CreateUpdateDefinition({
       <ResourceForm
         resourceName={resourceName}
         resourceFields={resourceFields}
+        stateFields={stateFields}
         setStateFields={setStateFields}
         redirect={redirect}
         setRedirect={setRedirect}
