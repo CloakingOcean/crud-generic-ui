@@ -9,17 +9,29 @@ function CreateUpdateDefinition({
   resourceFields,
   create,
 }) {
-  const [term, setTerm] = React.useState("");
-  const [definition, setDefinition] = React.useState("");
+  const [stateFields, setStateFields] = React.useState({});
+
+  /*
+
+  stateFields: 
+  {
+    fieldName1: fieldValue1,
+    fieldName2: fieldValue2,
+    fieldName3: fieldValue3,
+    fieldName4: fieldValue4,
+    fieldName5: fieldValue5
+  }
+
+  */
+
   const [redirect, setRedirect] = React.useState(false);
 
-  const setMethods = {
-    setTerm,
-    setDefinition,
-    setRedirect,
-  };
-
   const REACT_APP_API_URL = process.env.REACT_APP_API_URL;
+  const REACT_APP_RESOURCE_API_BASE_URL = process.env.REACT_APP_RESOURCE_API_BASE_URL.replace(
+    "<resource>",
+    // Perhaps in the future, will add functionality for resources that have differeing plural words
+    resourceName.toLowerCase() + "s"
+  );
 
   React.useEffect(() => {
     if (!create) {
@@ -31,42 +43,20 @@ function CreateUpdateDefinition({
   async function handlePopulation() {
     let url;
     if (!create) {
-      url = `${REACT_APP_API_URL}/api/definitions/${params.id}`;
+      url = `${REACT_APP_API_URL}${REACT_APP_RESOURCE_API_BASE_URL}/${params.id}`;
     } else {
-      url = `${REACT_APP_API_URL}/api/definitions/`;
+      url = `${REACT_APP_API_URL}${REACT_APP_RESOURCE_API_BASE_URL}`;
     }
 
     fetch(url)
       .then((response) => response.json())
       .then((data) => {
-        console.log(data);
-        const form = document.getElementById("resource-form");
+        const { __v, _id, ...prunedData } = data;
 
-        Object.keys(data)
-          .filter((field) => field !== "_id" && field !== "__v")
-          .forEach((field) => {
-            let computedName = field;
-
-            if (field.includes("-")) {
-              computedName = kebabToCamelCase(field);
-            }
-
-            const firstCapLetter = computedName.charAt(0).toUpperCase();
-            const rest = computedName.slice(1);
-
-            computedName = `set${firstCapLetter}${rest}`;
-
-            console.log(computedName);
-
-            setMethods[computedName](data[field]);
-          });
+        console.log("DATA");
+        console.log(prunedData);
+        setStateFields(prunedData);
       });
-  }
-
-  function kebabToCamelCase(string) {
-    return string.replace(/-([a-z])/g, function (g) {
-      return g[1].toUpperCase();
-    });
   }
 
   return (
@@ -74,10 +64,7 @@ function CreateUpdateDefinition({
       <ResourceForm
         resourceName={resourceName}
         resourceFields={resourceFields}
-        term={term}
-        setTerm={setTerm}
-        definition={definition}
-        setDefinition={setDefinition}
+        setStateFields={setStateFields}
         redirect={redirect}
         setRedirect={setRedirect}
         params={params}

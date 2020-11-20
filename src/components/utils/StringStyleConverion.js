@@ -17,8 +17,8 @@ export function kebabToLowerCaseWithSpaces(text) {
 }
 
 export function capitalizeWord(word) {
-  const upperCaseFirstLetter = word.charAt(0).toUpperCase;
-  const rest = word.slice(0);
+  const upperCaseFirstLetter = word.charAt(0).toUpperCase();
+  const rest = word.slice(1);
 
   return `${upperCaseFirstLetter}${rest}`;
 }

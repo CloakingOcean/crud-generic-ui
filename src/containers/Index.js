@@ -47,11 +47,8 @@ function Index({ resourceName, resourceFields }) {
     fetch(url)
       .then((response) => response.json())
       .then((data) => {
-        console.log(data);
-        console.log(resources);
         if (resources === undefined && data[0]) {
           setResources(data);
-          console.log(data);
 
           Object.keys(data[0])
             .filter((field) => Array.isArray(data[0][field]))
@@ -152,11 +149,11 @@ function Index({ resourceName, resourceFields }) {
       </table>
 
       <Link
-        to={`${REACT_APP_RESOURCE_API_BASE_URL}/update${capitalizeWord(
+        to={`${REACT_APP_RESOURCE_API_BASE_URL}/create${capitalizeWord(
           resourceName
         )}`}
       >
-        <Button color="success">{`Create ${capitalizeWord(
+        <Button color="success">{`Create ${kebabToPascalCaseWithSpaces(
           resourceName
         )}`}</Button>
       </Link>
