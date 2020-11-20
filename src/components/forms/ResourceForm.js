@@ -6,15 +6,12 @@ import InputField from "./InputField";
 import { Form, Button } from "reactstrap";
 
 function ResourceForm({
-  term,
-  setTerm,
-  definition,
-  setDefinition,
+  resourceName,
+  resourceFields,
+  setStateFields,
   redirect,
   setRedirect,
   params,
-  resourceName,
-  resourceFields,
   create,
 }) {
   const [backHome, setBackHome] = React.useState(false);
