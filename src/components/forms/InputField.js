@@ -2,7 +2,7 @@ import React from "react";
 
 import createFragment from "react-addons-create-fragment";
 
-import { Label } from "reactstrap";
+import { Label, Button } from "reactstrap";
 /**
  * Props:
  * name: The name of the input field.
@@ -17,6 +17,7 @@ function InputField({
   stateValue,
   setStateFunc,
   inputType,
+  stateFields,
   onChange = (e) => {
     setStateFunc(e.target.value);
   },
@@ -24,11 +25,21 @@ function InputField({
   const [isArray, setIsArray] = React.useState(false);
 
   React.useEffect(() => {
+    console.log("State Fields");
+    console.log(stateFields);
+
+    console.log("STATE VALUE: " + stateValue);
     if (Array.isArray(stateValue)) {
       setIsArray(true);
+    } else {
+      console.log("ARRAY: FALSE");
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [stateFields, stateValue]);
+
+  function handleArrayAddElement(event) {}
+
+  function handleArrayDeleteElement(event) {}
 
   return (
     <>
@@ -36,20 +47,40 @@ function InputField({
       {isArray &&
         isArray !== undefined &&
         stateValue.map((resource, index) => {
-          return (
-            <input
-              id={name}
-              key={index}
-              value={resource}
-              name={name}
-              type={inputType}
-              className="form-multi-input"
-              onChange={(event) => {
-                onChange(event, index);
-              }}
-              data-form-group={name}
-            />
-          );
+          return createFragment({
+            input: (
+              <input
+                id={name}
+                key={index}
+                value={resource}
+                name={name}
+                type={inputType}
+                className="form-multi-input"
+                onChange={(event) => {
+                  onChange(event, index);
+                }}
+                data-form-group={name}
+              />
+            ),
+            buttonContainer: (
+              <div key={`${index}-buttons`} className="button-container">
+                <Button
+                  color="success"
+                  type="button"
+                  onClick={handleArrayAddElement}
+                >
+                  Add
+                </Button>
+                <Button
+                  color="danger"
+                  type="button"
+                  onClick={handleArrayDeleteElement}
+                >
+                  Delete
+                </Button>
+              </div>
+            ),
+          });
         })}
       {!isArray && isArray !== undefined && (
         <>

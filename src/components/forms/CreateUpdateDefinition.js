@@ -34,29 +34,32 @@ function CreateUpdateDefinition({
   );
 
   React.useEffect(() => {
-    if (!create) {
-      handlePopulation();
-    }
+    // if (!create) {
+    handlePopulation();
+    // }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  async function handlePopulation() {
+  async function fetchDatabaseData() {
     let url;
-    if (!create) {
-      url = `${REACT_APP_API_URL}${REACT_APP_RESOURCE_API_BASE_URL}/${params.id}`;
-    } else {
-      url = `${REACT_APP_API_URL}${REACT_APP_RESOURCE_API_BASE_URL}`;
-    }
+    // if (!create) {
+    url = `${REACT_APP_API_URL}${REACT_APP_RESOURCE_API_BASE_URL}/${params.id}`;
+    // } else {
+    //   url = `${REACT_APP_API_URL}${REACT_APP_RESOURCE_API_BASE_URL}`;
+    // }
 
-    fetch(url)
-      .then((response) => response.json())
-      .then((data) => {
-        const { __v, _id, ...prunedData } = data;
+    const response = await fetch(url);
+    return await response.json();
+  }
 
-        console.log("DATA");
-        console.log(prunedData);
-        setStateFields(prunedData);
-      });
+  async function handlePopulation() {
+    const data = await fetchDatabaseData();
+    console.log(data);
+    const { __v, _id, ...prunedData } = data;
+
+    console.log("DATA");
+    console.log(prunedData);
+    setStateFields(prunedData);
   }
 
   return (

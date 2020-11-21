@@ -84,7 +84,8 @@ function ResourceForm({
       inputFields.push(
         <InputField
           name={resourceField.name}
-          stateValue={stateFields[resourceField]}
+          stateValue={stateFields[resourceField.name]}
+          stateFields={stateFields}
           setStateFields={setStateFields}
         />
       );
@@ -95,18 +96,6 @@ function ResourceForm({
     <>
       <Form id="resource-form" onSubmit={onSubmit}>
         {inputFields}
-        {/* <InputField
-          name="term"
-          stateValue={term}
-          setStateFunc={setTerm}
-          inputType="text"
-        />
-        <InputField
-          name="definition"
-          stateValue={definition}
-          setStateFunc={setDefinition}
-          inputType="text"
-        /> */}
         <Button
           color="primary"
           type="submit"
