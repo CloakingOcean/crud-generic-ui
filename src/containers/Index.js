@@ -49,6 +49,7 @@ function Index({ resourceName, resourceFields }) {
       .then((data) => {
         if (resources === undefined && data[0]) {
           setResources(data);
+          console.log(data);
 
           Object.keys(data[0])
             .filter((field) => Array.isArray(data[0][field]))

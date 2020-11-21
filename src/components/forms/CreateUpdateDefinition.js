@@ -34,32 +34,83 @@ function CreateUpdateDefinition({
   );
 
   React.useEffect(() => {
-    // if (!create) {
-    handlePopulation();
-    // }
+    if (!create) {
+      handleFieldPopulation();
+    } else {
+      handleFieldTypePopulation();
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  async function fetchDatabaseData() {
-    let url;
-    // if (!create) {
-    url = `${REACT_APP_API_URL}${REACT_APP_RESOURCE_API_BASE_URL}/${params.id}`;
-    // } else {
-    //   url = `${REACT_APP_API_URL}${REACT_APP_RESOURCE_API_BASE_URL}`;
-    // }
+  async function fetchDatabaseDataSingle() {
+    const url = `${REACT_APP_API_URL}${REACT_APP_RESOURCE_API_BASE_URL}/${params.id}`;
 
     const response = await fetch(url);
     return await response.json();
   }
 
-  async function handlePopulation() {
-    const data = await fetchDatabaseData();
-    console.log(data);
+  async function fetchDatabaseDataAll() {
+    const url = `${REACT_APP_API_URL}${REACT_APP_RESOURCE_API_BASE_URL}`;
+
+    const response = await fetch(url);
+    const data = await response.json();
+    console.log(url);
+    console.log("data");
+    return data;
+  }
+
+  async function pruneDataSingle() {
+    const data = await fetchDatabaseDataSingle();
     const { __v, _id, ...prunedData } = data;
+    return prunedData;
+  }
+
+  async function pruneDataAll() {
+    const data = await fetchDatabaseDataAll();
+
+    const prunedData = data.map((d) => {
+      const { __v, _id, ...prunedData } = d;
+      return prunedData;
+    });
+
+    console.log("PRUNED DATA");
+    console.log(prunedData);
+
+    return prunedData;
+  }
+
+  async function handleFieldPopulation() {
+    const prunedData = await pruneDataSingle();
+    setStateFields(prunedData);
 
     console.log("DATA");
-    console.log(prunedData);
-    setStateFields(prunedData);
+  }
+
+  async function handleFieldTypePopulation() {
+    const prunedData = await pruneDataAll();
+
+    const firstData = prunedData[0];
+
+    const typesObj = {};
+
+    for (let prop in firstData) {
+      const targetValue = firstData[prop];
+
+      if (Array.isArray(targetValue)) {
+        const stringArray = [""];
+        typesObj[prop] = stringArray;
+        continue;
+      }
+
+      typesObj[prop] = firstData[prop].constructor();
+    }
+
+    console.log("typesObj");
+    console.log(typesObj);
+
+    setStateFields(typesObj);
+    console.log("dataTypeInstances");
+    console.log(typesObj);
   }
 
   return (

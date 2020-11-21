@@ -25,11 +25,10 @@ function InputField({
   const [isArray, setIsArray] = React.useState(false);
 
   React.useEffect(() => {
-    console.log("State Fields");
-    console.log(stateFields);
-
-    console.log("STATE VALUE: " + stateValue);
     if (Array.isArray(stateValue)) {
+      console.log("STATE VALUE");
+      console.log(stateValue);
+      console.log("SETTING IS ARRAY!");
       setIsArray(true);
     } else {
       console.log("ARRAY: FALSE");
