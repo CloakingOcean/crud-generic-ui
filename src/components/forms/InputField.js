@@ -2,6 +2,8 @@ import React from "react";
 
 import createFragment from "react-addons-create-fragment";
 
+import { setStateObjectProperty } from "cloak-state-util";
+
 import { Label, Button } from "reactstrap";
 /**
  * Props:
@@ -15,16 +17,17 @@ import { Label, Button } from "reactstrap";
 function InputField({
   name,
   stateValue,
-  setStateFunc,
-  inputType,
   stateFields,
+  setStateFields,
+  inputType,
   onChange = (e) => {
-    setStateFunc(e.target.value);
+    setStateFields(e.target.value);
   },
 }) {
   const [isArray, setIsArray] = React.useState(false);
 
   React.useEffect(() => {
+    console.log("STATE VALUE");
     if (Array.isArray(stateValue)) {
       console.log("STATE VALUE");
       console.log(stateValue);
@@ -36,9 +39,26 @@ function InputField({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [stateFields, stateValue]);
 
-  function handleArrayAddElement(event) {}
+  function handleArrayAddElement(event) {
+    // setStateFields([...stateValue].push(""));
 
-  function handleArrayDeleteElement(event) {}
+    const updatedArray = [...stateValue];
+
+    updatedArray.push("");
+
+    console.log("handleArrayAddElement");
+  }
+
+  function handleArrayDeleteElement(event) {
+    // setStateFields(stateValue.slice(0, stateValue.length - 1));
+
+    const updatedArray = [...stateValue];
+    updatedArray.pop();
+
+    setStateObjectProperty(stateFields, setStateFields, name, updatedArray);
+    console.log(stateFields);
+    console.log("handleArrayDeleteElement");
+  }
 
   return (
     <>
