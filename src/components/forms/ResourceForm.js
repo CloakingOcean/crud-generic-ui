@@ -80,13 +80,14 @@ function ResourceForm({
   generateInputFields();
 
   function generateInputFields() {
-    resourceFields.forEach((resourceField) => {
+    resourceFields.forEach((resourceField, index) => {
       inputFields.push(
         <InputField
           name={resourceField.name}
           stateValue={stateFields[resourceField.name]}
           stateFields={stateFields}
           setStateFields={setStateFields}
+          index={index}
         />
       );
     });

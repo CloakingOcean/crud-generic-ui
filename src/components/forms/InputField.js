@@ -20,15 +20,28 @@ function InputField({
   stateFields,
   setStateFields,
   inputType,
+  index,
   onChange = (e) => {
     setStateFields(e.target.value);
   },
 }) {
   const [isArray, setIsArray] = React.useState(false);
+  const [showButtons, setShowButtons] = React.useState(true);
 
   React.useEffect(() => {
     console.log("STATE VALUE");
     if (Array.isArray(stateValue)) {
+      console.log(stateValue.length);
+      console.log("INDEX: " + index);
+      console.log(index === stateValue.length - 1);
+
+      if (index === stateValue.length - 1) {
+        console.log("SHowing Buttons");
+        setShowButtons(true);
+      } else {
+        setShowButtons(false);
+      }
+
       console.log("STATE VALUE");
       console.log(stateValue);
       console.log("SETTING IS ARRAY!");
@@ -37,7 +50,7 @@ function InputField({
       console.log("ARRAY: FALSE");
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [stateFields, stateValue]);
+  }, [stateFields, stateValue, index, showButtons]);
 
   function handleArrayAddElement(event) {
     // setStateFields([...stateValue].push(""));
@@ -45,6 +58,8 @@ function InputField({
     const updatedArray = [...stateValue];
 
     updatedArray.push("");
+
+    setStateObjectProperty(stateFields, setStateFields, name, updatedArray);
 
     console.log("handleArrayAddElement");
   }
@@ -66,7 +81,7 @@ function InputField({
       {isArray &&
         isArray !== undefined &&
         stateValue.map((resource, index) => {
-          return createFragment({
+          const fragmentObject = {
             input: (
               <input
                 id={name}
@@ -81,7 +96,10 @@ function InputField({
                 data-form-group={name}
               />
             ),
-            buttonContainer: (
+          };
+
+          if (showButtons) {
+            fragmentObject.buttonContainer = (
               <div key={`${index}-buttons`} className="button-container">
                 <Button
                   color="success"
@@ -98,8 +116,10 @@ function InputField({
                   Delete
                 </Button>
               </div>
-            ),
-          });
+            );
+          }
+
+          return createFragment(fragmentObject);
         })}
       {!isArray && isArray !== undefined && (
         <>
