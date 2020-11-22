@@ -49,7 +49,6 @@ function Index({ resourceName, resourceFields }) {
       .then((data) => {
         if (resources === undefined && data[0]) {
           setResources(data);
-          console.log(data);
 
           Object.keys(data[0])
             .filter((field) => Array.isArray(data[0][field]))
@@ -94,7 +93,20 @@ function Index({ resourceName, resourceFields }) {
       const resourceTableData = [];
 
       resourceFields.forEach((resourceField) => {
-        resourceTableData.push(handleTableData(resource, resourceField.name));
+        console.log(resourceField);
+
+        if (resourceField.multi) {
+          console.log("HAS MULTI!");
+          console.log(resource);
+          resourceTableData.push(
+            handleArrayTableData(
+              resource[resourceField.name],
+              resourceField.name
+            )
+          );
+        } else {
+          resourceTableData.push(handleTableData(resource, resourceField.name));
+        }
       });
 
       resourceTableData.push(
@@ -138,6 +150,16 @@ function Index({ resourceName, resourceFields }) {
 
   function handleTableData(resource, fieldName) {
     return <td key={`${fieldName}-${resource._id}`}>{resource[fieldName]}</td>;
+  }
+
+  function handleArrayTableData(fieldDataArray, fieldName) {
+    console.log("fieldDataArray");
+    console.log(fieldDataArray);
+    // return <td key={`${fieldName}-${index}`}>{arrayElement}</td>;
+
+    return fieldDataArray.map((element, index) => {
+      return <td key={`${fieldName}-${index}`}>{element}</td>;
+    });
   }
 
   return (
