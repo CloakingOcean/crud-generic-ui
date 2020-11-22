@@ -89,6 +89,14 @@ function Index({ resourceName, resourceFields }) {
   fieldsObj.header.push(<th key="delete-header">Delete</th>);
 
   if (resources !== undefined) {
+    // resourceFields.forEach((resourceField) => {
+    //   if (!resourceFields.multi) {
+    //     return;
+    //   }
+
+    //   resource[resourceField.name].length;
+    // });
+
     resources.forEach((resource) => {
       const resourceTableData = [];
 
@@ -142,7 +150,10 @@ function Index({ resourceName, resourceFields }) {
 
   function handleFieldHeaders(resourceField) {
     return (
-      <th key={resourceField.name}>
+      <th
+        key={resourceField.name}
+        colSpan={maxColumnLengths[resourceField.name]}
+      >
         {kebabToPascalCaseWithSpaces(resourceField.name)}
       </th>
     );
