@@ -21,8 +21,13 @@ function InputField({
   setStateFields,
   inputType,
   index,
+  onArrayChange = (e, index) => {
+    const updatedArray = [...stateValue];
+    updatedArray[index] = e.target.value;
+    setStateObjectProperty(stateFields, setStateFields, name, updatedArray);
+  },
   onChange = (e) => {
-    setStateFields(e.target.value);
+    setStateObjectProperty(stateFields, setStateFields, name, e.target.value);
   },
 }) {
   const [isArray, setIsArray] = React.useState(false);
@@ -59,6 +64,10 @@ function InputField({
   function handleArrayDeleteElement(event) {
     // setStateFields(stateValue.slice(0, stateValue.length - 1));
 
+    if (stateValue.length <= 1) {
+      return;
+    }
+
     const updatedArray = [...stateValue];
     updatedArray.pop();
 
@@ -83,7 +92,7 @@ function InputField({
                 type={inputType}
                 className="form-multi-input"
                 onChange={(event) => {
-                  onChange(event, index);
+                  onArrayChange(event, index);
                 }}
                 data-form-group={name}
               />
