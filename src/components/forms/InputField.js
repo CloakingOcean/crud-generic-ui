@@ -34,14 +34,6 @@ function InputField({
       console.log(stateValue.length);
       console.log("INDEX: " + index);
       console.log(index === stateValue.length - 1);
-
-      if (index === stateValue.length - 1) {
-        console.log("SHowing Buttons");
-        setShowButtons(true);
-      } else {
-        setShowButtons(false);
-      }
-
       console.log("STATE VALUE");
       console.log(stateValue);
       console.log("SETTING IS ARRAY!");
@@ -98,7 +90,7 @@ function InputField({
             ),
           };
 
-          if (showButtons) {
+          if (index === stateValue.length - 1) {
             fragmentObject.buttonContainer = (
               <div key={`${index}-buttons`} className="button-container">
                 <Button
