@@ -103,17 +103,27 @@ function Index({ resourceName, resourceFields }) {
       resourceFields.forEach((resourceField) => {
         console.log(resourceField);
 
+        let count = 0;
+
         if (resourceField.multi) {
           console.log("HAS MULTI!");
           console.log(resource);
-          resourceTableData.push(
-            handleArrayTableData(
-              resource[resourceField.name],
-              resourceField.name
-            )
+
+          const tableData = handleArrayTableData(
+            resource[resourceField.name],
+            resourceField.name
           );
+
+          count += tableData.length;
+
+          resourceTableData.push(tableData);
         } else {
+          count++;
           resourceTableData.push(handleTableData(resource, resourceField.name));
+        }
+
+        for (; count < maxColumnLengths[resourceField.name]; count++) {
+          resourceTableData.push(<td></td>);
         }
       });
 
