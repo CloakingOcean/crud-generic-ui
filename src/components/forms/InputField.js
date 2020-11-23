@@ -71,9 +71,9 @@ function InputField({
       )}
       {isArray &&
         isArray !== undefined &&
-        stateValue.map((resource, index) => {
-          const fragmentObject = {
-            input: (
+        stateFields[name].map((resource, index) => {
+          return (
+            <React.Fragment>
               <input
                 id={name}
                 key={`${resource}-${index}-input`}
@@ -86,36 +86,32 @@ function InputField({
                 }}
                 data-form-group={name}
               />
-            ),
-          };
 
-          if (index === stateValue.length - 1) {
-            fragmentObject.buttonContainer = (
-              <div
-                key={`${name}-${index}-buttons-div`}
-                className="button-container"
-              >
-                <Button
-                  key={`${name}-${index}-add-button`}
-                  color="success"
-                  type="button"
-                  onClick={handleArrayAddElement}
+              {index === stateValue.length - 1 && (
+                <div
+                  key={`${name}-${index}-buttons-div`}
+                  className="button-container"
                 >
-                  Add
-                </Button>
-                <Button
-                  key={`${name}-${index}-delete-button`}
-                  color="danger"
-                  type="button"
-                  onClick={handleArrayDeleteElement}
-                >
-                  Delete
-                </Button>
-              </div>
-            );
-          }
-
-          return createFragment(fragmentObject);
+                  <Button
+                    key={`${name}-${index}-add-button`}
+                    color="success"
+                    type="button"
+                    onClick={handleArrayAddElement}
+                  >
+                    Add
+                  </Button>
+                  <Button
+                    key={`${name}-${index}-delete-button`}
+                    color="danger"
+                    type="button"
+                    onClick={handleArrayDeleteElement}
+                  >
+                    Delete
+                  </Button>
+                </div>
+              )}
+            </React.Fragment>
+          );
         })}
       {!isArray && isArray !== undefined && (
         <React.Fragment key={`${name}-${index}-label-input-combo`}>
