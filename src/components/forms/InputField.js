@@ -73,7 +73,7 @@ function InputField({
             input: (
               <input
                 id={name}
-                key={index}
+                key={`${resource}-${index}-input`}
                 value={resource}
                 name={name}
                 type={inputType}
@@ -88,7 +88,10 @@ function InputField({
 
           if (index === stateValue.length - 1) {
             fragmentObject.buttonContainer = (
-              <div key={`${index}-buttons`} className="button-container">
+              <div
+                key={`${resource._id}-${index}-buttons`}
+                className="button-container"
+              >
                 <Button
                   color="success"
                   type="button"
@@ -109,7 +112,7 @@ function InputField({
 
           return createFragment(fragmentObject);
         })}
-      {!isArray && isArray !== undefined && (
+      {/* {!isArray && isArray !== undefined && (
         <>
           {createFragment({
             label: (
@@ -129,7 +132,7 @@ function InputField({
             ),
           })}
         </>
-      )}
+      )} */}
     </>
   );
 }
