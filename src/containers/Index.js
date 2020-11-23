@@ -96,6 +96,7 @@ function Index({ resourceName, resourceFields }) {
   if (resources !== undefined) {
     resources.forEach((resource) => {
       const resourceTableData = [];
+
       resourceFields.forEach((resourceField) => {
         let count = 0;
         if (resourceField.multi) {
@@ -110,34 +111,40 @@ function Index({ resourceName, resourceFields }) {
           resourceTableData.push(handleTableData(resource, resourceField.name));
         }
         for (; count < maxColumnLengths[resourceField.name]; count++) {
-          resourceTableData.push(<td></td>);
+          resourceTableData.push(
+            <td
+              key={`${resource._id}-${resourceField.name}-${count}-spacing`}
+            ></td>
+          );
         }
       });
-      // resourceTableData.push(
-      //   <td key={`${resource._id}-update`}>
-      //     <Link
-      //       to={`${REACT_APP_RESOURCE_API_BASE_URL}/update${capitalizeWord(
-      //         resourceName
-      //       )}/${encodeURI(resource._id)}`}
-      //     >
-      //       <Button color="primary">Update</Button>
-      //     </Link>
-      //   </td>
-      // );
-      // resourceTableData.push(
-      //   <td key={`${resource._id}-delete`}>
-      //     <DeleteButton
-      //       resourceProp={resource}
-      //       updateDelete={updateDelete}
-      //       resourceName={resourceName}
-      //       resourceFields={resourceFields}
-      //     />
-      //   </td>
-      // );
-      // const nestedTableData = (
-      //   <tr key={`${resource._id}-row`}>{resourceTableData}</tr>
-      // );
-      // fieldsObj.tableData.push(nestedTableData);
+
+      resourceTableData.push(
+        <td key={`${resource._id}-update`}>
+          <Link
+            to={`${REACT_APP_RESOURCE_API_BASE_URL}/update${capitalizeWord(
+              resourceName
+            )}/${encodeURI(resource._id)}`}
+          >
+            <Button color="primary">Update</Button>
+          </Link>
+        </td>
+      );
+
+      resourceTableData.push(
+        <td key={`${resource._id}-delete`}>
+          <DeleteButton
+            resourceProp={resource}
+            updateDelete={updateDelete}
+            resourceName={resourceName}
+            resourceFields={resourceFields}
+          />
+        </td>
+      );
+      const nestedTableData = (
+        <tr key={`${resource._id}-row`}>{resourceTableData}</tr>
+      );
+      fieldsObj.tableData.push(nestedTableData);
     });
   }
 
@@ -157,7 +164,7 @@ function Index({ resourceName, resourceFields }) {
   }
 
   function handleArrayTableData(fieldDataArray, fieldName) {
-    return <td key={`${fieldName}-${index}`}>{arrayElement}</td>;
+    // return <td key={`${fieldName}-${index}`}>{arrayElement}</td>;
 
     return fieldDataArray.map((element, index) => {
       return <td key={`${fieldName}-${index}`}>{element}</td>;
@@ -166,14 +173,14 @@ function Index({ resourceName, resourceFields }) {
 
   return (
     <main>
-      {/* <table>
+      <table>
         <thead>
           <tr>{fieldsObj.header}</tr>
         </thead>
         <tbody>{fieldsObj.tableData}</tbody>
-      </table> */}
+      </table>
 
-      {/* <Link
+      <Link
         to={`${REACT_APP_RESOURCE_API_BASE_URL}/create${capitalizeWord(
           resourceName
         )}`}
@@ -181,7 +188,7 @@ function Index({ resourceName, resourceFields }) {
         <Button color="success">{`Create ${kebabToPascalCaseWithSpaces(
           resourceName
         )}`}</Button>
-      </Link> */}
+      </Link>
     </main>
   );
 }
