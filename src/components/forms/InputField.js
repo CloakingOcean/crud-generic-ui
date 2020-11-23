@@ -66,7 +66,7 @@ function InputField({
   return (
     <>
       {isArray && isArray !== undefined && <Label htmlFor={name}>{name}</Label>}
-      {isArray &&
+      {/* {isArray &&
         isArray !== undefined &&
         stateValue.map((resource, index) => {
           const fragmentObject = {
@@ -113,7 +113,7 @@ function InputField({
           }
 
           return createFragment(fragmentObject);
-        })}
+        })} */}
       {!isArray && isArray !== undefined && (
         <>
           {createFragment({
