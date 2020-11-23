@@ -74,7 +74,7 @@ function InputField({
               <input
                 id={name}
                 key={`${resource}-${index}-input`}
-                value={resource}
+                value={stateFields[name][index] || ""}
                 name={name}
                 type={inputType}
                 className="form-multi-input"
@@ -89,10 +89,11 @@ function InputField({
           if (index === stateValue.length - 1) {
             fragmentObject.buttonContainer = (
               <div
-                key={`${resource._id}-${index}-buttons`}
+                key={`${resource._id}-${index}-buttons-div`}
                 className="button-container"
               >
                 <Button
+                  key={`${resource._id}-${index}-add-button`}
                   color="success"
                   type="button"
                   onClick={handleArrayAddElement}
@@ -100,6 +101,7 @@ function InputField({
                   Add
                 </Button>
                 <Button
+                  key={`${resource._id}-${index}-delete-button`}
                   color="danger"
                   type="button"
                   onClick={handleArrayDeleteElement}
@@ -112,7 +114,7 @@ function InputField({
 
           return createFragment(fragmentObject);
         })}
-      {/* {!isArray && isArray !== undefined && (
+      {!isArray && isArray !== undefined && (
         <>
           {createFragment({
             label: (
@@ -124,7 +126,7 @@ function InputField({
               <input
                 id={name}
                 key={`${name}-input`}
-                value={stateValue}
+                value={stateFields[name] || ""}
                 name={name}
                 type={inputType}
                 onChange={onChange}
@@ -132,7 +134,7 @@ function InputField({
             ),
           })}
         </>
-      )} */}
+      )}
     </>
   );
 }
