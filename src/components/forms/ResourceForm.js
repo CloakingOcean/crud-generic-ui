@@ -57,12 +57,6 @@ function ResourceForm({
       url = `${REACT_APP_API_URL}${REACT_APP_RESOURCE_API_BASE_URL}`;
     }
 
-    if (!create) {
-      console.log("SENDING WITH PUT!");
-    } else {
-      console.log("SENDING WITH CREATE");
-    }
-
     fetch(url, {
       method: create ? "POST" : "PUT",
       headers: {
@@ -79,24 +73,23 @@ function ResourceForm({
 
   generateInputFields();
 
-  function generateInputFields() {
-    resourceFields.forEach((resourceField, index) => {
-      inputFields.push(
-        <InputField
-          name={resourceField.name}
-          stateValue={stateFields[resourceField.name]}
-          stateFields={stateFields}
-          setStateFields={setStateFields}
-          index={index}
-        />
-      );
-    });
-  }
+  function generateInputFields() {}
 
   return (
     <>
       <Form id="resource-form" onSubmit={onSubmit}>
-        {inputFields}
+        {resourceFields.map((resourceField, index) => {
+          return (
+            <InputField
+              key={index}
+              name={resourceField.name}
+              stateValue={stateFields[resourceField.name]}
+              stateFields={stateFields}
+              setStateFields={setStateFields}
+              index={index}
+            />
+          );
+        })}
         <Button
           color="primary"
           type="submit"

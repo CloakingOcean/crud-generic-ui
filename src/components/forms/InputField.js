@@ -31,14 +31,13 @@ function InputField({
   },
 }) {
   const [isArray, setIsArray] = React.useState(false);
-  const [showButtons, setShowButtons] = React.useState(true);
 
   React.useEffect(() => {
     if (Array.isArray(stateValue)) {
       setIsArray(true);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [stateFields, stateValue, index, showButtons]);
+  }, [stateFields, stateValue, index]);
 
   function handleArrayAddElement(event) {
     // setStateFields([...stateValue].push(""));
@@ -62,9 +61,6 @@ function InputField({
 
     setStateObjectProperty(stateFields, setStateFields, name, updatedArray);
   }
-
-  console.log("StateValue:");
-  console.log(stateValue);
 
   return (
     <React.Fragment key={`${name}-${index}-main-fragment-combo`}>

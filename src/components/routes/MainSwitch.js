@@ -10,7 +10,6 @@ import CreateUpdateDefinition from "../../components/forms/CreateUpdateDefinitio
 import { capitalizeWord } from "../../components/utils/StringStyleConverion";
 
 function MainSwitch({ resourceName, resourceFields }) {
-  const REACT_APP_API_URL = process.env.REACT_APP_API_URL;
   const REACT_APP_RESOURCE_API_BASE_URL = process.env.REACT_APP_RESOURCE_API_BASE_URL.replace(
     "<resource>",
     // Perhaps in the future, will add functionality for resources that have differeing plural words
