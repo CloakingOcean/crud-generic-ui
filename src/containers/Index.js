@@ -183,14 +183,14 @@ function Index({ resourceName, resourceFields }) {
 
   return (
     <main>
-      <table>
+      {/* <table>
         <thead>
           <tr>{fieldsObj.header}</tr>
         </thead>
         <tbody>{fieldsObj.tableData}</tbody>
-      </table>
+      </table> */}
 
-      <Link
+      {/* <Link
         to={`${REACT_APP_RESOURCE_API_BASE_URL}/create${capitalizeWord(
           resourceName
         )}`}
@@ -198,7 +198,7 @@ function Index({ resourceName, resourceFields }) {
         <Button color="success">{`Create ${kebabToPascalCaseWithSpaces(
           resourceName
         )}`}</Button>
-      </Link>
+      </Link> */}
     </main>
   );
 }
