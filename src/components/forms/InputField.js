@@ -63,10 +63,17 @@ function InputField({
     setStateObjectProperty(stateFields, setStateFields, name, updatedArray);
   }
 
+  console.log("StateValue:");
+  console.log(stateValue);
+
   return (
-    <>
-      {isArray && isArray !== undefined && <Label htmlFor={name}>{name}</Label>}
-      {/* {isArray &&
+    <React.Fragment key={`${name}-${index}-main-fragment-combo`}>
+      {isArray && isArray !== undefined && (
+        <Label key={`${name}-${index}-array-label`} htmlFor={name}>
+          {name}
+        </Label>
+      )}
+      {isArray &&
         isArray !== undefined &&
         stateValue.map((resource, index) => {
           const fragmentObject = {
@@ -89,11 +96,11 @@ function InputField({
           if (index === stateValue.length - 1) {
             fragmentObject.buttonContainer = (
               <div
-                key={`${resource._id}-${index}-buttons-div`}
+                key={`${name}-${index}-buttons-div`}
                 className="button-container"
               >
                 <Button
-                  key={`${resource._id}-${index}-add-button`}
+                  key={`${name}-${index}-add-button`}
                   color="success"
                   type="button"
                   onClick={handleArrayAddElement}
@@ -101,7 +108,7 @@ function InputField({
                   Add
                 </Button>
                 <Button
-                  key={`${resource._id}-${index}-delete-button`}
+                  key={`${name}-${index}-delete-button`}
                   color="danger"
                   type="button"
                   onClick={handleArrayDeleteElement}
@@ -113,29 +120,23 @@ function InputField({
           }
 
           return createFragment(fragmentObject);
-        })} */}
+        })}
       {!isArray && isArray !== undefined && (
-        <>
-          {createFragment({
-            label: (
-              <Label key={`${name}-label`} htmlFor={name}>
-                {name}
-              </Label>
-            ),
-            input: (
-              <input
-                id={name}
-                key={`${name}-input`}
-                value={stateFields[name] || ""}
-                name={name}
-                type={inputType}
-                onChange={onChange}
-              />
-            ),
-          })}
-        </>
+        <React.Fragment key={`${name}-${index}-label-input-combo`}>
+          <Label key={`${name}-label`} htmlFor={name}>
+            {name}
+          </Label>
+          <input
+            id={name}
+            key={`${name}-input`}
+            value={stateFields[name] || ""}
+            name={name}
+            type={inputType}
+            onChange={onChange}
+          />
+        </React.Fragment>
       )}
-    </>
+    </React.Fragment>
   );
 }
 
