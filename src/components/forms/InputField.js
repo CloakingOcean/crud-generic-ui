@@ -76,7 +76,7 @@ function InputField({
             <React.Fragment>
               <input
                 id={name}
-                key={`${resource}-${index}-input`}
+                key={`${name}-${index}-input`}
                 value={stateFields[name][index] || ""}
                 name={name}
                 type={inputType}
