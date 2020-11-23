@@ -54,8 +54,6 @@ function CreateUpdateDefinition({
 
     const response = await fetch(url);
     const data = await response.json();
-    console.log(url);
-    console.log("data");
     return data;
   }
 
@@ -73,17 +71,12 @@ function CreateUpdateDefinition({
       return prunedData;
     });
 
-    console.log("PRUNED DATA");
-    console.log(prunedData);
-
     return prunedData;
   }
 
   async function handleFieldPopulation() {
     const prunedData = await pruneDataSingle();
     setStateFields(prunedData);
-
-    console.log("DATA");
   }
 
   async function handleFieldTypePopulation() {
@@ -104,13 +97,7 @@ function CreateUpdateDefinition({
 
       typesObj[prop] = firstData[prop].constructor();
     }
-
-    console.log("typesObj");
-    console.log(typesObj);
-
     setStateFields(typesObj);
-    console.log("dataTypeInstances");
-    console.log(typesObj);
   }
 
   return (

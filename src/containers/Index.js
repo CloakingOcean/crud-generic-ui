@@ -42,6 +42,11 @@ function Index({ resourceName, resourceFields }) {
   */
 
   React.useEffect(function () {
+    handleFetchingData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  function handleFetchingData() {
     const url = `${REACT_APP_API_URL}${REACT_APP_RESOURCE_API_BASE_URL}`;
 
     fetch(url)
@@ -70,13 +75,13 @@ function Index({ resourceName, resourceFields }) {
             });
         }
       });
-
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }
 
   function updateDelete(id) {
     deleteItemFromStateArrayByMongoId(resources, setResources, id);
   }
+
+  // Will Review
 
   const fieldsObj = {};
   fieldsObj.tableData = [];
@@ -101,14 +106,9 @@ function Index({ resourceName, resourceFields }) {
       const resourceTableData = [];
 
       resourceFields.forEach((resourceField) => {
-        console.log(resourceField);
-
         let count = 0;
 
         if (resourceField.multi) {
-          console.log("HAS MULTI!");
-          console.log(resource);
-
           const tableData = handleArrayTableData(
             resource[resourceField.name],
             resourceField.name
@@ -174,8 +174,6 @@ function Index({ resourceName, resourceFields }) {
   }
 
   function handleArrayTableData(fieldDataArray, fieldName) {
-    console.log("fieldDataArray");
-    console.log(fieldDataArray);
     // return <td key={`${fieldName}-${index}`}>{arrayElement}</td>;
 
     return fieldDataArray.map((element, index) => {

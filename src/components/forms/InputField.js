@@ -34,17 +34,8 @@ function InputField({
   const [showButtons, setShowButtons] = React.useState(true);
 
   React.useEffect(() => {
-    console.log("STATE VALUE");
     if (Array.isArray(stateValue)) {
-      console.log(stateValue.length);
-      console.log("INDEX: " + index);
-      console.log(index === stateValue.length - 1);
-      console.log("STATE VALUE");
-      console.log(stateValue);
-      console.log("SETTING IS ARRAY!");
       setIsArray(true);
-    } else {
-      console.log("ARRAY: FALSE");
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [stateFields, stateValue, index, showButtons]);
@@ -57,8 +48,6 @@ function InputField({
     updatedArray.push("");
 
     setStateObjectProperty(stateFields, setStateFields, name, updatedArray);
-
-    console.log("handleArrayAddElement");
   }
 
   function handleArrayDeleteElement(event) {
@@ -72,8 +61,6 @@ function InputField({
     updatedArray.pop();
 
     setStateObjectProperty(stateFields, setStateFields, name, updatedArray);
-    console.log(stateFields);
-    console.log("handleArrayDeleteElement");
   }
 
   return (
